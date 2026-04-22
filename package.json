@@ -1,0 +1,12 @@
+{
+  "name": "business-decision-simulator",
+  "version": "1.0.0",
+  "description": "Prototipo funcional (60%) de un simulador web para **entrenamiento en toma de decisiones empresariales**, con autenticación por roles, gestión de escenarios y ejecución de simulaciones.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
