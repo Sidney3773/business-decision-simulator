@@ -6,14 +6,17 @@ import {
   Typography,
   Card,
   CardContent,
-  Box
+  Box,
+  Button
 } from '@mui/material';
-import { People, School, Assignment, TrendingUp } from '@mui/icons-material';
+import { People, School, Assignment, TrendingUp, ManageAccounts } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalScenarios: 0,
@@ -117,10 +120,17 @@ const AdminDashboard = () => {
             <Typography variant="h6" gutterBottom>
               Panel de Control
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Desde aquí puedes gestionar usuarios, escenarios y visualizar todas las simulaciones.
-              Usa el menú de navegación para acceder a cada sección.
             </Typography>
+            <Button
+              variant="contained"
+              startIcon={<ManageAccounts />}
+              onClick={() => navigate('/users')}
+              sx={{ borderRadius: 2 }}
+            >
+              Gestión de Usuarios
+            </Button>
           </Paper>
         </Grid>
       </Grid>

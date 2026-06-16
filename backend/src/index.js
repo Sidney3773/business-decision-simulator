@@ -9,6 +9,9 @@ const authRoutes = require('./routes/auth.routes');
 const usersRoutes = require('./routes/users.routes');
 const scenariosRoutes = require('./routes/scenarios.routes');
 const simulationsRoutes = require('./routes/simulations.routes');
+const aiRoutes = require('./routes/ai.routes');
+const reportsRoutes = require('./routes/reports.routes');
+const subjectsRoutes = require('./routes/subjects.routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -37,6 +40,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/scenarios', scenariosRoutes);
 app.use('/api/simulations', simulationsRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/reports', reportsRoutes);
+app.use('/api/subjects', subjectsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
@@ -44,12 +50,12 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
     await testConnection();
-    
     app.listen(PORT, () => {
       console.log(`\nServidor corriendo en http://localhost:${PORT}`);
       console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
       console.log(`Base de datos: ${process.env.DB_NAME}`);
-      console.log(`\nBackend listo para recibir peticiones\n`);
+      console.log(`IA (Ollama): ${process.env.OLLAMA_URL || 'http://localhost:11434'}`);
+      console.log(`\nBackend listo\n`);
     });
   } catch (error) {
     console.error('Error al iniciar servidor:', error);

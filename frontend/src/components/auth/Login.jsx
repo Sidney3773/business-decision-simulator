@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   Box,
@@ -245,23 +245,13 @@ const Login = () => {
 
             <Divider sx={{ my: 3 }}>
               <Typography variant="caption" color="text.secondary">
-                ¿PRIMERA VEZ?
+                ACCESO
               </Typography>
             </Divider>
 
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary">
-                ¿No tienes cuenta?{' '}
-                <Link
-                  to="/register"
-                  style={{
-                    color: '#667eea',
-                    textDecoration: 'none',
-                    fontWeight: 600
-                  }}
-                >
-                  Regístrate gratis
-                </Link>
+                ¿No tienes cuenta? Solicita tus credenciales al administrador de la plataforma.
               </Typography>
             </Box>
 
@@ -276,7 +266,7 @@ const Login = () => {
               }}
             >
               <Typography variant="caption" fontWeight={600} display="block" mb={1}>
-                🔐 Usuarios de prueba:
+                 Usuarios de prueba:
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Typography variant="caption">

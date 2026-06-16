@@ -31,6 +31,7 @@ const StudentDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [scenarios, setScenarios] = useState([]);
+  const [allSimulations, setAllSimulations] = useState([]);
   const [recentSimulations, setRecentSimulations] = useState([]);
   const [stats, setStats] = useState({ total: 0, avgScore: 0, completed: 0 });
   const [loading, setLoading] = useState(true);
@@ -44,6 +45,7 @@ const StudentDashboard = () => {
       setScenarios(scenariosRes.data.scenarios);
       
       const sims = simulationsRes.data.simulations;
+      setAllSimulations(sims);
       setRecentSimulations(sims.slice(0, 5));
       
       // Calcular estadísticas
@@ -242,75 +244,122 @@ const StudentDashboard = () => {
                 </Alert>
               ) : (
                 <Grid container spacing={2} sx={{ mt: 1 }}>
-                  {scenarios.map((scenario) => (
-                    <Grid item xs={12} key={scenario.id}>
-                      <Card
-                        sx={{
-                          borderRadius: 2,
-                          border: '2px solid transparent',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            border: '2px solid #667eea',
-                            transform: 'translateX(5px)',
-                            boxShadow: '0 8px 24px rgba(102, 126, 234, 0.2)'
-                          }
-                        }}
-                      >
-                        <CardContent>
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', mb: 2 }}>
-                            <Typography variant="h6" fontWeight={700}>
-                              {scenario.title}
+                  {scenarios.map((scenario) => {
+                    const scenarioSims = allSimulations.filter(s => s.scenarioId === scenario.id);
+                    const scenarioCompleted = scenarioSims.filter(s => s.status === 'COMPLETED');
+                    const bestScore = scenarioCompleted.length > 0 ? Math.max(...scenarioCompleted.map(s => s.score || 0)) : null;
+
+                    return (
+                      <Grid item xs={12} key={scenario.id}>
+                        <Card
+                          sx={{
+                            borderRadius: 2,
+                            border: '2px solid transparent',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              border: '2px solid #667eea',
+                              transform: 'translateX(5px)',
+                              boxShadow: '0 8px 24px rgba(102, 126, 234, 0.2)'
+                            }
+                          }}
+                        >
+                          <CardContent>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', mb: 2 }}>
+                              <Typography variant="h6" fontWeight={700}>
+                                {scenario.title}
+                              </Typography>
+                              <Chip
+                                label={scenario.difficulty}
+                                color={getDifficultyColor(scenario.difficulty)}
+                                size="small"
+                                sx={{ fontWeight: 600 }}
+                              />
+                            </Box>
+                            
+                            <Typography variant="body2" color="text.secondary" paragraph>
+                              {scenario.description}
                             </Typography>
-                            <Chip
-                              label={scenario.difficulty}
-                              color={getDifficultyColor(scenario.difficulty)}
-                              size="small"
-                              sx={{ fontWeight: 600 }}
-                            />
-                          </Box>
+                            
+                            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 1 }}>
+                              <Chip
+                                size="small"
+                                label={`💰 $${parseFloat(scenario.initialBudget).toLocaleString()}`}
+                                variant="outlined"
+                              />
+                              <Chip
+                                size="small"
+                                label={`⏱️ ${scenario.timeLimitMinutes} min`}
+                                variant="outlined"
+                              />
+                            </Box>
+
+                            {scenarioSims.length > 0 && (
+                              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
+                                <Chip
+                                  size="small"
+                                  label={`Intentos: ${scenarioSims.length}`}
+                                  variant="outlined"
+                                  color="info"
+                                />
+                                {bestScore !== null && (
+                                  <Chip
+                                    size="small"
+                                    label={`Mejor Puntuación: ${bestScore} pts`}
+                                    color={getScoreColor(bestScore)}
+                                    sx={{ fontWeight: 600 }}
+                                  />
+                                )}
+                              </Box>
+                            )}
+                          </CardContent>
                           
-                          <Typography variant="body2" color="text.secondary" paragraph>
-                            {scenario.description}
-                          </Typography>
-                          
-                          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                            <Chip
-                              size="small"
-                              label={`💰 $${parseFloat(scenario.initialBudget).toLocaleString()}`}
-                              variant="outlined"
-                            />
-                            <Chip
-                              size="small"
-                              label={`⏱️ ${scenario.timeLimitMinutes} min`}
-                              variant="outlined"
-                            />
-                          </Box>
-                        </CardContent>
-                        
-                        <CardActions sx={{ px: 2, pb: 2 }}>
-                          <Button
-                            fullWidth
-                            variant="contained"
-                            startIcon={<PlayArrow />}
-                            onClick={() => navigate(`/simulation/${scenario.id}`)}
-                            sx={{
-                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                              fontWeight: 600,
-                              textTransform: 'none',
-                              borderRadius: 2,
-                              py: 1,
-                              '&:hover': {
-                                transform: 'scale(1.02)',
-                                boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)'
-                              }
-                            }}
-                          >
-                            Iniciar Simulación
-                          </Button>
-                        </CardActions>
-                      </Card>
-                    </Grid>
-                  ))}
+                          <CardActions sx={{ px: 2, pb: 2, gap: 1.5 }}>
+                            <Button
+                              fullWidth={scenarioSims.length === 0}
+                              variant="contained"
+                              startIcon={<PlayArrow />}
+                              onClick={() => navigate(`/simulation/${scenario.id}`)}
+                              sx={{
+                                flex: 1,
+                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                fontWeight: 600,
+                                textTransform: 'none',
+                                borderRadius: 2,
+                                py: 1,
+                                '&:hover': {
+                                  transform: 'scale(1.02)',
+                                  boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)'
+                                }
+                              }}
+                            >
+                              {scenarioSims.length > 0 ? 'Volver a Intentar' : 'Iniciar Simulación'}
+                            </Button>
+                            {scenarioSims.length > 0 && (
+                              <Button
+                                variant="outlined"
+                                onClick={() => navigate(`/simulation-result/${scenarioSims[0].id}`)}
+                                sx={{
+                                  flex: 1,
+                                  textTransform: 'none',
+                                  fontWeight: 600,
+                                  borderRadius: 2,
+                                  py: 1,
+                                  borderColor: 'primary.main',
+                                  color: 'primary.main',
+                                  '&:hover': {
+                                    background: 'rgba(25, 118, 210, 0.04)',
+                                    borderColor: 'primary.dark'
+                                  }
+                                }}
+                              >
+                                Ver Último Feedback
+                              </Button>
+                            )}
+                          </CardActions>
+                        </Card>
+                      </Grid>
+                    );
+                  })}
                 </Grid>
               )}
             </Paper>
@@ -347,13 +396,16 @@ const StudentDashboard = () => {
                   {recentSimulations.map((sim) => (
                     <Card
                       key={sim.id}
+                      onClick={() => navigate(`/simulation-result/${sim.id}`)}
                       sx={{
                         mb: 2,
                         borderRadius: 2,
                         border: '1px solid #f0f0f0',
+                        cursor: 'pointer',
                         transition: 'all 0.3s ease',
                         '&:hover': {
-                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                          boxShadow: '0 4px 12px rgba(102, 126, 234, 0.2)',
+                          borderColor: '#667eea',
                           transform: 'translateY(-2px)'
                         }
                       }}

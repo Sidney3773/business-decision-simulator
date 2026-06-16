@@ -2,68 +2,51 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('simulations', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
+    // Solo inserta simulaciones de demo, NO crea la tabla
+    // (la tabla ya fue creada por la migración 20251016144454-create-simulations.js)
+    await queryInterface.bulkInsert('simulations', [
+      {
+        user_id: 3,         // student@simulator.com
+        scenario_id: 1,
+        decisions_made: JSON.stringify([
+          {
+            decisionId: 2,
+            text: 'Implementar campaña de marketing agresiva',
+            budgetImpact: -20000,
+            scoreImpact: 80
+          }
+        ]),
+        final_budget: 130000.00,
+        score: 80,
+        time_taken_seconds: 320,
+        status: 'COMPLETED',
+        feedback: 'Aumentaste ventas sin sacrificar márgenes. Buen desempeño (80 pts). Cambio presupuestario: -13.3%',
+        created_at: new Date(),
+        updated_at: new Date()
       },
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'users',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      },
-      scenario_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'scenarios',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      },
-      choices: {
-        type: Sequelize.JSON,
-        allowNull: true
-      },
-      score: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0
-      },
-      budget_remaining: {
-        type: Sequelize.DECIMAL(15,2),
-        allowNull: true
-      },
-      started_at: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      },
-      finished_at: {
-        type: Sequelize.DATE,
-        allowNull: true
-      },
-      created_at: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      },
-      updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+      {
+        user_id: 3,
+        scenario_id: 2,
+        decisions_made: JSON.stringify([
+          {
+            decisionId: 5,
+            text: 'Asociación estratégica local ($50k)',
+            budgetImpact: -50000,
+            scoreImpact: 100
+          }
+        ]),
+        final_budget: 450000.00,
+        score: 100,
+        time_taken_seconds: 540,
+        status: 'COMPLETED',
+        feedback: 'Excelente desempeño (100 pts). Reduciste riesgo y costos. Incremento presupuestario: -10.0%',
+        created_at: new Date(),
+        updated_at: new Date()
       }
-    });
+    ], {});
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('simulations');
+    await queryInterface.bulkDelete('simulations', null, {});
   }
 };

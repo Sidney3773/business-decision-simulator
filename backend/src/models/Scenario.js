@@ -48,6 +48,12 @@ module.exports = (sequelize) => {
       allowNull: false,
       field: 'created_by'
     },
+    subjectId: {
+      // Materia a la que pertenece el escenario. Determina qué estudiantes lo ven.
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      field: 'subject_id'
+    },
     isActive: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
@@ -67,6 +73,10 @@ module.exports = (sequelize) => {
     Scenario.hasMany(models.Simulation, {
       foreignKey: 'scenarioId',
       as: 'simulations'
+    });
+    Scenario.belongsTo(models.Subject, {
+      foreignKey: 'subjectId',
+      as: 'subject'
     });
   };
 

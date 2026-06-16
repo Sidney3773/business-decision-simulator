@@ -1,15 +1,15 @@
 const { verifyToken } = require('../utils/jwt');
 const db = require('../models');
 
-/**
- * Middleware para proteger rutas que requieren autenticación
- */
+// 🔐 Autenticación
 const protect = async (req, res, next) => {
   try {
     let token;
 
-    // Obtener token del header Authorization
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
       token = req.headers.authorization.split(' ')[1];
     }
 
@@ -20,10 +20,8 @@ const protect = async (req, res, next) => {
       });
     }
 
-    // Verificar token
     const decoded = verifyToken(token);
 
-    // Buscar usuario
     const user = await db.User.findByPk(decoded.id, {
       attributes: { exclude: ['password'] }
     });
@@ -42,31 +40,31 @@ const protect = async (req, res, next) => {
       });
     }
 
-    // Adjuntar usuario a la request
     req.user = user;
     next();
   } catch (error) {
     return res.status(401).json({
       success: false,
-      message: 'No autorizado. Token inválido',
+      message: 'Token inválido o expirado',
       error: error.message
     });
   }
 };
 
-/**
- * Middleware para autorizar según roles
- */
+// 🔒 Autorización por roles
 const authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({
         success: false,
-        message: `Rol ${req.user.role} no autorizado para esta acción`
+        message: `Rol ${req.user.role} no autorizado`
       });
     }
     next();
   };
 };
 
-module.exports = { protect, authorize };
+module.exports = {
+  protect,
+  authorize
+};

@@ -4,7 +4,7 @@ const { generateToken } = require('../utils/jwt');
 /**
  * @desc    Registrar nuevo usuario
  * @route   POST /api/auth/register
- * @access  Public
+ * @access  aPublic
  */
 const register = async (req, res, next) => {
   try {

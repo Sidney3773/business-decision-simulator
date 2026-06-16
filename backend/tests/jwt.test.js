@@ -1,8 +1,8 @@
 /**
- * PRUEBA UNITARIA 2 — Utilidades JWT (jwt.js)
+ * SEGUNDA PRUEBA UNITARIA — Utilidades JWT (jwt.js)
  * Archivo: src/utils/jwt.js
  *
- * Qué se prueba:
+ * Que probamos?:
  *   - Que generateToken devuelve un string con formato JWT válido.
  *   - Que verifyToken decodifica correctamente el payload original.
  *   - Que verifyToken lanza un error con un token falso o alterado.

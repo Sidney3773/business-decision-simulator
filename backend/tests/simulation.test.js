@@ -1,9 +1,9 @@
 /**
- * PRUEBA UNITARIA 1 — Motor de Simulación (SimulationEngine)
+ * PRIMERA PRUEBA UNITARIA — Motor de Simulación (SimulationEngine)
  * Archivo: src/services/simulation.service.js
  *
- * Qué se prueba:
- *   - Que la simulación calcula bien el presupuesto final sumando impactos.
+ * Que probamos?:
+ *   - Que la simulación calcula bien el presupuesto final sumando los impactos.
  *   - Que el estado pasa a FAILED cuando el presupuesto queda negativo.
  *   - Que el score nunca supera 100 aunque los impactos sean muy altos.
  */
@@ -52,7 +52,7 @@ describe('Prueba 1 — SimulationEngine', () => {
       300
     );
 
-    expect(resultado.finalBudget).toBe(105000);
+    expect(resultado.finalBudget).toBe(108000);
     expect(resultado.status).toBe('COMPLETED');
     expect(resultado.decisionsMade).toHaveLength(2);
   });

@@ -48,6 +48,12 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
       field: 'is_active'
+    },
+    subjectId: {
+      // Solo aplica a usuarios con rol STUDENT: la materia a la que pertenece
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      field: 'subject_id'
     }
   }, {
     tableName: 'users',
@@ -85,6 +91,18 @@ module.exports = (sequelize) => {
     User.hasMany(models.Simulation, {
       foreignKey: 'userId',
       as: 'simulations'
+    });
+
+    // Estudiante → su materia asignada
+    User.belongsTo(models.Subject, {
+      foreignKey: 'subjectId',
+      as: 'subject'
+    });
+
+    // Profesor → materias que tiene a cargo (lado inverso de Subject.belongsTo)
+    User.hasMany(models.Subject, {
+      foreignKey: 'teacherId',
+      as: 'subjectsTaught'
     });
   };
 

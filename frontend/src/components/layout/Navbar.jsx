@@ -17,7 +17,9 @@ import {
   Dashboard,
   Person,
   TrendingUp,
-  KeyboardArrowDown
+  KeyboardArrowDown,
+  History,
+  ManageAccounts
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -137,6 +139,42 @@ const Navbar = () => {
           >
             Dashboard
           </Button>
+          {user?.role === 'STUDENT' && (
+            <Button
+              color="inherit"
+              startIcon={<History />}
+              onClick={() => navigate('/my-simulations')}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 600,
+                borderRadius: 2,
+                px: 2,
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.15)'
+                }
+              }}
+            >
+              Mi Historial
+            </Button>
+          )}
+          {user?.role === 'ADMIN' && (
+            <Button
+              color="inherit"
+              startIcon={<ManageAccounts />}
+              onClick={() => navigate('/users')}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 600,
+                borderRadius: 2,
+                px: 2,
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.15)'
+                }
+              }}
+            >
+              Usuarios
+            </Button>
+          )}
         </Box>
 
         {/* User Menu */}
@@ -241,6 +279,32 @@ const Navbar = () => {
             <Dashboard sx={{ mr: 1.5, fontSize: 20 }} />
             Dashboard
           </MenuItem>
+
+          {user?.role === 'STUDENT' && (
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                navigate('/my-simulations');
+              }}
+              sx={{ py: 1.5 }}
+            >
+              <History sx={{ mr: 1.5, fontSize: 20 }} />
+              Mi Historial
+            </MenuItem>
+          )}
+
+          {user?.role === 'ADMIN' && (
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                navigate('/users');
+              }}
+              sx={{ py: 1.5 }}
+            >
+              <ManageAccounts sx={{ mr: 1.5, fontSize: 20 }} />
+              Gestión de Usuarios
+            </MenuItem>
+          )}
 
           <MenuItem
             onClick={() => {
