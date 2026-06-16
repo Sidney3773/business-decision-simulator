@@ -243,16 +243,16 @@ const AdminDashboard = () => {
                               </Box>
                             }
                             secondary={
-                              <Box sx={{ display: 'flex', gap: 2, mt: 0.3 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.3 }}>
+                              <Box component="span" sx={{ display: 'flex', gap: 2, mt: 0.3 }}>
+                                <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.3 }}>
                                   <School sx={{ fontSize: 12, color: 'text.disabled' }} />
-                                  <Typography variant="caption" color="text.secondary">
+                                  <Typography component="span" variant="caption" color="text.secondary">
                                     {subj.teacher?.name || 'Sin profesor'}
                                   </Typography>
                                 </Box>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.3 }}>
+                                <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.3 }}>
                                   <Groups sx={{ fontSize: 12, color: 'text.disabled' }} />
-                                  <Typography variant="caption" color="text.secondary">{cnt} est.</Typography>
+                                  <Typography component="span" variant="caption" color="text.secondary">{cnt} est.</Typography>
                                 </Box>
                               </Box>
                             }

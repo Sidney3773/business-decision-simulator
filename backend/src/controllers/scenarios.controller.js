@@ -22,7 +22,12 @@ const getScenarios = async (req, res, next) => {
         // Estudiante sin materia asignada: no ve ningún escenario
         return res.json({ success: true, data: { scenarios: [] } });
       }
-      whereClause.subjectId = req.user.subjectId;
+      // Ve escenarios de su materia + escenarios legacy sin materia asignada
+      const { Op } = require('sequelize');
+      whereClause[Op.or] = [
+        { subjectId: req.user.subjectId },
+        { subjectId: null }
+      ];
     }
 
     const scenarios = await db.Scenario.findAll({
@@ -81,7 +86,10 @@ const getScenarioById = async (req, res, next) => {
     }
 
     // Un estudiante solo puede acceder a escenarios de su propia materia
-    if (req.user.role === 'STUDENT' && scenario.subjectId !== req.user.subjectId) {
+    // o escenarios legacy sin materia asignada (subjectId = null)
+    if (req.user.role === 'STUDENT' &&
+        scenario.subjectId !== null &&
+        scenario.subjectId !== req.user.subjectId) {
       return res.status(403).json({
         success: false,
         message: 'No tienes acceso a este escenario'
