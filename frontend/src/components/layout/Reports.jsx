@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   Paper,
@@ -41,7 +42,9 @@ import {
   Close,
   Timer,
   AttachMoney,
-  History
+  History,
+  ArrowForward,
+  OpenInNew
 } from '@mui/icons-material';
 import { reportsService } from '../../services/reportsService';
 import { aiService } from '../../services/aiService';
@@ -497,59 +500,133 @@ const AIInsight = ({ datos }) => {
   );
 };
 
+
+// ─── Mini gráfica de barras SVG para scores de escenarios ────────────────────
+const MiniBarChart = ({ escenarios }) => {
+  const [hovered, setHovered] = useState(null);
+  if (!escenarios || escenarios.length === 0) return null;
+  const data = escenarios.filter(e => e.scorePromedio != null).slice(0, 8);
+  if (data.length === 0) return null;
+
+  const W = 560, H = 180, PL = 40, PR = 10, PT = 20, PB = 60;
+  const cW = W - PL - PR, cH = H - PT - PB;
+  const barW = Math.min(40, (cW / data.length) * 0.55);
+  const gap = cW / data.length;
+  const colors = data.map(e => e.scorePromedio >= 80 ? '#4caf50' : e.scorePromedio >= 60 ? '#ff9800' : '#f44336');
+
+  return (
+    <Box sx={{ width: '100%', position: 'relative', mb: 1 }}>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="auto">
+        {[0,25,50,75,100].map(v => {
+          const y = PT + cH - (v/100)*cH;
+          return (
+            <g key={v}>
+              <line x1={PL} y1={y} x2={W-PR} y2={y} stroke="#e0e0e0" strokeWidth="1" strokeDasharray="3 3"/>
+              <text x={PL-6} y={y+4} textAnchor="end" fontSize="9" fill="#aaa">{v}</text>
+            </g>
+          );
+        })}
+        {data.map((esc, i) => {
+          const x = PL + gap*i + gap/2 - barW/2;
+          const bH = (esc.scorePromedio/100)*cH;
+          const y = PT + cH - bH;
+          const isH = hovered === i;
+          const title = esc.title.length > 14 ? esc.title.slice(0,13)+'…' : esc.title;
+          return (
+            <g key={i} onMouseEnter={()=>setHovered(i)} onMouseLeave={()=>setHovered(null)} style={{cursor:'pointer'}}>
+              <rect x={x} y={y} width={barW} height={bH} fill={colors[i]} opacity={isH?1:0.72} rx="3"/>
+              <text x={x+barW/2} y={y-5} textAnchor="middle" fontSize="10" fontWeight="700" fill={colors[i]}>{esc.scorePromedio}</text>
+              <text x={x+barW/2} y={H-PB+14} textAnchor="middle" fontSize="9" fill="#666"
+                transform={`rotate(-30, ${x+barW/2}, ${H-PB+14})`}>{title}</text>
+            </g>
+          );
+        })}
+      </svg>
+      {hovered !== null && (
+        <Paper sx={{position:'absolute',top:4,right:4,px:1.5,py:1,borderRadius:2,boxShadow:3,pointerEvents:'none',zIndex:10}}>
+          <Typography variant="caption" color="text.secondary" display="block">{data[hovered].title}</Typography>
+          <Typography variant="body2" fontWeight={800} color="primary">{data[hovered].scorePromedio} pts prom.</Typography>
+          <Typography variant="caption" color="text.secondary">{data[hovered].totalSimulaciones} simulaciones</Typography>
+        </Paper>
+      )}
+    </Box>
+  );
+};
+
 // ─── Tab: Reporte por escenarios ─────────────────────────────────────────────
-const TabEscenarios = ({ escenarios }) => (
-  <Box>
-    <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
-      <Table>
-        <TableHead sx={{ bgcolor: 'grey.50' }}>
-          <TableRow>
-            <TableCell sx={{ fontWeight: 700 }}>Escenario</TableCell>
-            <TableCell sx={{ fontWeight: 700 }}>Dificultad</TableCell>
-            <TableCell sx={{ fontWeight: 700 }}>Simulaciones</TableCell>
-            <TableCell sx={{ fontWeight: 700 }}>Score promedio</TableCell>
-            <TableCell sx={{ fontWeight: 700 }}>Tasa de éxito</TableCell>
-            <TableCell sx={{ fontWeight: 700 }}>Tiempo promedio</TableCell>
-            <TableCell sx={{ fontWeight: 700 }}>Estado</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {escenarios.length === 0 ? (
+const TabEscenarios = ({ escenarios }) => {
+  const navigate = useNavigate();
+  return (
+    <Box>
+      {/* Gráfica de barras comparativa */}
+      {escenarios.some(e => e.scorePromedio != null) && (
+        <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 3, mb: 3 }}>
+          <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <BarChart fontSize="small" color="primary" /> Score Promedio por Escenario
+          </Typography>
+          <MiniBarChart escenarios={escenarios} />
+        </Paper>
+      )}
+
+      <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
+        <Table>
+          <TableHead sx={{ bgcolor: 'grey.50' }}>
             <TableRow>
-              <TableCell colSpan={7} align="center" sx={{ py: 4, color: 'text.secondary' }}>
-                No hay datos aún. Los reportes aparecerán cuando los estudiantes completen simulaciones.
-              </TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Escenario</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Dificultad</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Simulaciones</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Score promedio</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Tasa de éxito</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Tiempo promedio</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Estado</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Reporte</TableCell>
             </TableRow>
-          ) : (
-            escenarios.map(esc => (
-              <TableRow key={esc.id} sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
-                <TableCell>
-                  <Typography variant="body2" fontWeight={600}>{esc.title}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Chip label={diffLabel(esc.difficulty)} color={diffColor(esc.difficulty)} size="small" sx={{ fontWeight: 600 }} />
-                </TableCell>
-                <TableCell>{esc.totalSimulaciones}</TableCell>
-                <TableCell><ScoreChip score={esc.scorePromedio} /></TableCell>
-                <TableCell><MiniProgress value={esc.tasaExito} /></TableCell>
-                <TableCell>{segundosAMinutos(esc.tiempoPromedioSegundos)}</TableCell>
-                <TableCell>
-                  <Chip
-                    label={esc.isActive ? 'Publicado' : 'Borrador'}
-                    color={esc.isActive ? 'success' : 'default'}
-                    size="small"
-                    variant={esc.isActive ? 'filled' : 'outlined'}
-                    sx={{ fontWeight: 600 }}
-                  />
+          </TableHead>
+          <TableBody>
+            {escenarios.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} align="center" sx={{ py: 4, color: 'text.secondary' }}>
+                  No hay datos aún. Los reportes aparecerán cuando los estudiantes completen simulaciones.
                 </TableCell>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  </Box>
-);
+            ) : (
+              escenarios.map(esc => (
+                <TableRow key={esc.id} sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+                  <TableCell>
+                    <Typography variant="body2" fontWeight={600}>{esc.title}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Chip label={diffLabel(esc.difficulty)} color={diffColor(esc.difficulty)} size="small" sx={{ fontWeight: 600 }} />
+                  </TableCell>
+                  <TableCell>{esc.totalSimulaciones}</TableCell>
+                  <TableCell><ScoreChip score={esc.scorePromedio} /></TableCell>
+                  <TableCell><MiniProgress value={esc.tasaExito} /></TableCell>
+                  <TableCell>{segundosAMinutos(esc.tiempoPromedioSegundos)}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={esc.isActive ? 'Publicado' : 'Borrador'}
+                      color={esc.isActive ? 'success' : 'default'}
+                      size="small"
+                      variant={esc.isActive ? 'filled' : 'outlined'}
+                      sx={{ fontWeight: 600 }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Button size="small" variant="outlined" endIcon={<OpenInNew />}
+                      onClick={() => navigate(`/scenarios/${esc.id}/report`)}
+                      sx={{ borderRadius: 2, fontSize: 11, textTransform: 'none', fontWeight: 600 }}>
+                      Ver
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
+};
 
 // ─── Tab: Reporte por estudiantes ────────────────────────────────────────────
 const TabEstudiantes = ({ estudiantes, onVerProgreso }) => (

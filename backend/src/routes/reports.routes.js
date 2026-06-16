@@ -164,3 +164,75 @@ router.get('/student', protect, async (req, res, next) => {
 });
 
 module.exports = router;
+// ─── GET /api/reports/scenario/:id ───────────────────────────────────────────
+router.get('/scenario/:id', protect, authorize('TEACHER', 'ADMIN'), async (req, res, next) => {
+  try {
+    const scenarioId = req.params.id;
+
+    const scenario = await db.Scenario.findByPk(scenarioId, {
+      include: [
+        {
+          model: db.Simulation,
+          as: 'simulations',
+          include: [{ model: db.User, as: 'user', attributes: ['id', 'name', 'email'] }]
+        }
+      ]
+    });
+
+    if (!scenario) {
+      return res.status(404).json({ success: false, message: 'Escenario no encontrado' });
+    }
+
+    // TEACHER solo puede ver reportes de sus propios escenarios
+    if (req.user.role === 'TEACHER' && scenario.createdBy !== req.user.id) {
+      return res.status(403).json({ success: false, message: 'No autorizado' });
+    }
+
+    const sims = scenario.simulations || [];
+    const scores = sims.map(s => s.score).filter(s => s != null);
+
+    // Distribución de scores en rangos
+    const rangos = [
+      { label: '0-20',  min: 0,  max: 20,  count: 0 },
+      { label: '21-40', min: 21, max: 40,  count: 0 },
+      { label: '41-60', min: 41, max: 60,  count: 0 },
+      { label: '61-80', min: 61, max: 80,  count: 0 },
+      { label: '81-100',min: 81, max: 100, count: 0 },
+    ];
+    scores.forEach(s => {
+      const r = rangos.find(r => s >= r.min && s <= r.max);
+      if (r) r.count++;
+    });
+
+    // Top 5 estudiantes
+    const topEstudiantes = [...sims]
+      .filter(s => s.user && s.score != null)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
+      .map(s => ({ name: s.user.name, email: s.user.email, score: s.score, timeTakenSeconds: s.timeTakenSeconds, completedAt: s.createdAt }));
+
+    // Evolución cronológica (últimas 20 simulaciones)
+    const evolucion = [...sims]
+      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+      .slice(-20)
+      .map((s, i) => ({ intento: i + 1, score: s.score, date: s.createdAt }));
+
+    res.json({
+      success: true,
+      data: {
+        scenario: { id: scenario.id, title: scenario.title, difficulty: scenario.difficulty, isActive: scenario.isActive, initialBudget: scenario.initialBudget, timeLimitMinutes: scenario.timeLimitMinutes },
+        resumen: {
+          totalSimulaciones: sims.length,
+          scorePromedio: scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null,
+          mejorScore: scores.length ? Math.max(...scores) : null,
+          peorScore: scores.length ? Math.min(...scores) : null,
+          tasaExito: scores.length ? Math.round((scores.filter(s => s >= 70).length / scores.length) * 100) : null,
+          tiempoPromedio: sims.length ? Math.round(sims.reduce((a, s) => a + (s.timeTakenSeconds || 0), 0) / sims.length) : null
+        },
+        distribucionScores: rangos,
+        topEstudiantes,
+        evolucion
+      }
+    });
+  } catch (error) { next(error); }
+});

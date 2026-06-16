@@ -390,7 +390,7 @@ const TeacherDashboard = () => {
                             <IconButton
                               size="small"
                               color="primary"
-                              onClick={() => navigate(`/scenarios/${scenario.id}`)}
+                              onClick={() => navigate(`/scenarios/${scenario.id}/report`)}
                             >
                               <BarChart fontSize="small" />
                             </IconButton>

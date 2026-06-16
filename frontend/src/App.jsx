@@ -13,6 +13,7 @@ import MySimulations from './components/simulations/MySimulations';
 import Reports from './components/layout/Reports';
 import UserManagement from './components/layout/UserManagement';
 import SubjectManagement from './components/layout/SubjectManagement';
+import ScenarioReport from './components/scenarios/ScenarioReport';
 
 
 const theme = createTheme({
@@ -81,6 +82,13 @@ function App() {
             {/* Resultado de simulación */}
             <Route path="/simulation-result/:simulationId" element={
               <ProtectedRoute><SimulationResult /></ProtectedRoute>
+            } />
+
+            {/* Reporte de escenario */}
+            <Route path="/scenarios/:scenarioId/report" element={
+              <ProtectedRoute allowedRoles={['TEACHER', 'ADMIN']}>
+                <ScenarioReport />
+              </ProtectedRoute>
             } />
 
             {/* Mis simulaciones */}
