@@ -670,7 +670,7 @@ const ReporteDocente = () => {
 
   useEffect(() => {
     reportsService.getTeacherReport()
-      .then(res => setData(res.data))
+      .then(res => setData(res))
       .catch(() => setError('Error cargando el reporte'))
       .finally(() => setLoading(false));
   }, []);
@@ -763,8 +763,8 @@ const ReporteAdmin = () => {
       reportsService.getTeacherReport()
     ])
       .then(([adminRes, detailedRes]) => {
-        setAdminData(adminRes.data);
-        setDetailedData(detailedRes.data);
+        setAdminData(adminRes);
+        setDetailedData(detailedRes);
       })
       .catch(() => setError('Error cargando los reportes'))
       .finally(() => setLoading(false));

@@ -19,7 +19,8 @@ import {
   TrendingUp,
   KeyboardArrowDown,
   History,
-  ManageAccounts
+  ManageAccounts,
+  MenuBook
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -175,6 +176,24 @@ const Navbar = () => {
               Usuarios
             </Button>
           )}
+          {user?.role === 'ADMIN' && (
+            <Button
+              color="inherit"
+              startIcon={<MenuBook />}
+              onClick={() => navigate('/subjects')}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 600,
+                borderRadius: 2,
+                px: 2,
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.15)'
+                }
+              }}
+            >
+              Materias
+            </Button>
+          )}
         </Box>
 
         {/* User Menu */}
@@ -303,6 +322,19 @@ const Navbar = () => {
             >
               <ManageAccounts sx={{ mr: 1.5, fontSize: 20 }} />
               Gestión de Usuarios
+            </MenuItem>
+          )}
+
+          {user?.role === 'ADMIN' && (
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                navigate('/subjects');
+              }}
+              sx={{ py: 1.5 }}
+            >
+              <MenuBook sx={{ mr: 1.5, fontSize: 20 }} />
+              Gestión de Materias
             </MenuItem>
           )}
 
