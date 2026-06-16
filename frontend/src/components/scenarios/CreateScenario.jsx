@@ -452,12 +452,12 @@ const CreateScenario = () => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField fullWidth type="number" label="Presupuesto inicial ($)"
-                name="initialBudget" value={formData.initialBudget}
+                name="initialBudget" value={formData.initialBudget ?? ''}
                 onChange={handleChange} required inputProps={{ min: 0 }} />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField fullWidth type="number" label="Tiempo límite (min)"
-                name="timeLimitMinutes" value={formData.timeLimitMinutes}
+                name="timeLimitMinutes" value={formData.timeLimitMinutes ?? ''}
                 onChange={handleChange} required inputProps={{ min: 5, max: 120 }}
                 helperText="Entre 5 y 120 minutos" />
             </Grid>
@@ -492,13 +492,13 @@ const CreateScenario = () => {
                   <Grid item xs={12} sm={6}>
                     <TextField fullWidth type="number" label="Impacto en presupuesto ($)"
                       value={decision.impact.budget}
-                      onChange={(e) => handleDecisionChange(index, 'impact.budget', parseFloat(e.target.value))}
+                      onChange={(e) => handleDecisionChange(index, 'impact.budget', e.target.value === '' ? '' : parseFloat(e.target.value))}
                       required helperText="Negativo = gasto, Positivo = ingreso" />
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField fullWidth type="number" label="Puntuación (0–100)"
                       value={decision.impact.score}
-                      onChange={(e) => handleDecisionChange(index, 'impact.score', parseInt(e.target.value))}
+                      onChange={(e) => handleDecisionChange(index, 'impact.score', e.target.value === '' ? '' : parseInt(e.target.value))}
                       required inputProps={{ min: 0, max: 100 }} helperText="100 = decisión óptima" />
                   </Grid>
                 </Grid>

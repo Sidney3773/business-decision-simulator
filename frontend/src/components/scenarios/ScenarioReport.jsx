@@ -48,7 +48,7 @@ const BarChartDistribucion = ({ data }) => {
 
   return (
     <Box sx={{ position: 'relative', width: '100%' }}>
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="auto">
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%">
         {/* Líneas de referencia */}
         {[0, 25, 50, 75, 100].map(pct => {
           const y = PT + cH - (pct / 100) * cH;
@@ -121,7 +121,7 @@ const LineChartEvolucion = ({ data }) => {
 
   return (
     <Box sx={{ position: 'relative', width: '100%' }}>
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="auto" style={{ overflow: 'visible' }}>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ overflow: 'visible' }}>
         <defs>
           <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#667eea" stopOpacity="0.35" />

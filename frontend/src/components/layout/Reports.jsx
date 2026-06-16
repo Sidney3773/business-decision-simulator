@@ -167,7 +167,7 @@ const StudentProgressChart = ({ student }) => {
 
   return (
     <Box sx={{ position: 'relative', width: '100%', mt: 2, mb: 1 }}>
-      <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="auto" style={{ overflow: 'visible' }}>
+      <svg viewBox={`0 0 ${width} ${height}`} width="100%" style={{ overflow: 'visible' }}>
         <defs>
           <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#667eea" stopOpacity="0.4" />
@@ -516,7 +516,7 @@ const MiniBarChart = ({ escenarios }) => {
 
   return (
     <Box sx={{ width: '100%', position: 'relative', mb: 1 }}>
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="auto">
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%">
         {[0,25,50,75,100].map(v => {
           const y = PT + cH - (v/100)*cH;
           return (
@@ -992,7 +992,7 @@ const Reports = () => {
     >
       <Container maxWidth="lg">
         <Typography variant="h4" fontWeight={800} gutterBottom sx={{ color: 'text.primary' }}>
-          📊 Panel de Reportes y Rendimiento
+          Panel de Reportes y Rendimiento
         </Typography>
         <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
           {user?.role === 'ADMIN'

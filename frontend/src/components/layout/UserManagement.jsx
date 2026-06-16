@@ -373,12 +373,12 @@ const UserManagement = () => {
                               {u.name?.charAt(0).toUpperCase()}
                             </Avatar>
                             <Box>
-                              <Typography variant="body2" fontWeight={600}>
-                                {u.name}
+                              <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                <Typography variant="body2" fontWeight={600}>{u.name}</Typography>
                                 {u.id === currentUser.id && (
-                                  <Chip label="Tú" size="small" sx={{ ml: 1, height: 18, fontSize: 10 }} />
+                                  <Chip label="Tú" size="small" sx={{ height: 18, fontSize: 10 }} />
                                 )}
-                              </Typography>
+                              </Box>
                               <Typography variant="caption" color="text.secondary">{u.email}</Typography>
                             </Box>
                           </Box>
