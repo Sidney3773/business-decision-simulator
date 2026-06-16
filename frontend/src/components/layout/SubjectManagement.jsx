@@ -212,8 +212,9 @@ const SubjectCard = ({ subject, onEdit, onAssign, onDelete }) => {
   return (
     <Card sx={{
       borderRadius: 3, height: '100%', display: 'flex', flexDirection: 'column',
-      border: '1px solid', borderColor: 'divider', transition: 'all 0.2s',
-      '&:hover': { boxShadow: '0 8px 24px rgba(0,0,0,0.1)', transform: 'translateY(-2px)' }
+      border: '2px solid transparent', transition: 'all 0.3s ease',
+      boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+      '&:hover': { border: '2px solid #4facfe', transform: 'translateY(-5px)', boxShadow: '0 8px 24px rgba(79,172,254,0.2)' }
     }}>
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5 }}>
@@ -343,20 +344,91 @@ const SubjectManagement = () => {
   const filteredSubjects = careerTab ? subjects.filter(s => s.career === careerTab) : subjects;
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-        <Typography variant="h4" fontWeight={700}>Gestión de Materias</Typography>
-        <Button variant="contained" startIcon={<Add />}
-          onClick={() => { setEditingSubject(null); setFormOpen(true); }} sx={{ borderRadius: 2 }}>
-          Nueva materia
-        </Button>
+    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', py: 4 }}>
+    <Container maxWidth="lg">
+      {/* Header */}
+      <Box sx={{ mb: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+          <Box>
+            <Typography variant="h4" sx={{
+              fontWeight: 800,
+              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+              backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
+            }}>
+              Gestión de Materias
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              Crea las materias por carrera, asigna un profesor y matricula estudiantes.
+            </Typography>
+          </Box>
+          <Button variant="contained" startIcon={<Add />}
+            onClick={() => { setEditingSubject(null); setFormOpen(true); }}
+            sx={{
+              borderRadius: 2, textTransform: 'none', fontWeight: 600,
+              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+              boxShadow: '0 4px 12px rgba(79, 172, 254, 0.4)',
+              '&:hover': { transform: 'scale(1.02)', boxShadow: '0 6px 20px rgba(79, 172, 254, 0.5)' }
+            }}>
+            Nueva materia
+          </Button>
+        </Box>
       </Box>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Crea las materias por carrera, asigna un profesor y matricula estudiantes.
-        Los escenarios del profesor solo serán visibles para los estudiantes de su materia.
-      </Typography>
 
-      <Paper sx={{ borderRadius: 3, mb: 3 }}>
+      {/* Stats Cards */}
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid item xs={12} sm={4}>
+          <Paper sx={{
+            p: 3, borderRadius: 3, color: 'white',
+            background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+            boxShadow: '0 8px 24px rgba(79, 172, 254, 0.4)',
+            transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-5px)' }
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <MenuBook sx={{ fontSize: 48, opacity: 0.9 }} />
+              <Box>
+                <Typography variant="h3" fontWeight={800}>{subjects.length}</Typography>
+                <Typography variant="body2" sx={{ opacity: 0.9 }}>Total Materias</Typography>
+              </Box>
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Paper sx={{
+            p: 3, borderRadius: 3, color: 'white',
+            background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            boxShadow: '0 8px 24px rgba(67, 233, 123, 0.4)',
+            transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-5px)' }
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <School sx={{ fontSize: 48, opacity: 0.9 }} />
+              <Box>
+                <Typography variant="h3" fontWeight={800}>{subjects.filter(s => s.teacherId).length}</Typography>
+                <Typography variant="body2" sx={{ opacity: 0.9 }}>Con Profesor</Typography>
+              </Box>
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Paper sx={{
+            p: 3, borderRadius: 3, color: 'white',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            boxShadow: '0 8px 24px rgba(102, 126, 234, 0.4)',
+            transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-5px)' }
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Groups sx={{ fontSize: 48, opacity: 0.9 }} />
+              <Box>
+                <Typography variant="h3" fontWeight={800}>
+                  {subjects.reduce((acc, s) => acc + (s.studentCount ?? s.students?.length ?? 0), 0)}
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.9 }}>Estudiantes</Typography>
+              </Box>
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
+
+      <Paper sx={{ borderRadius: 3, mb: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
         <Tabs value={careerTab} onChange={(_, v) => setCareerTab(v)}
           sx={{ borderBottom: 1, borderColor: 'divider', px: 2 }}>
           <Tab value="" label="Todas" />
@@ -367,12 +439,12 @@ const SubjectManagement = () => {
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}><CircularProgress /></Box>
       ) : filteredSubjects.length === 0 ? (
-        <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 3 }}>
-          <MenuBook sx={{ fontSize: 48, color: 'text.disabled', mb: 1 }} />
-          <Typography color="text.secondary">No hay materias {careerTab && `para ${careerTab}`} aún.</Typography>
-          <Button variant="outlined" startIcon={<Add />}
+        <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
+          <MenuBook sx={{ fontSize: 56, color: 'text.disabled', mb: 1 }} />
+          <Typography color="text.secondary" sx={{ mb: 2 }}>No hay materias {careerTab && `para ${careerTab}`} aún.</Typography>
+          <Button variant="contained" startIcon={<Add />}
             onClick={() => { setEditingSubject(null); setFormOpen(true); }}
-            sx={{ mt: 2, borderRadius: 2 }}>
+            sx={{ borderRadius: 2, background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100)', boxShadow: '0 4px 12px rgba(79,172,254,0.4)' }}>
             Crear primera materia
           </Button>
         </Paper>
@@ -411,6 +483,7 @@ const SubjectManagement = () => {
         </Alert>
       </Snackbar>
     </Container>
+    </Box>
   );
 };
 

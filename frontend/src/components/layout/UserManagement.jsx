@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   Container,
+  Grid,
   Paper,
   Typography,
   Button,
@@ -43,7 +44,8 @@ import {
   Lock,
   Badge,
   CheckCircle,
-  Block
+  Block,
+  Groups
 } from '@mui/icons-material';
 import { userService } from '../../services/userService';
 import { useAuth } from '../../contexts/AuthContext';
@@ -311,32 +313,94 @@ const UserManagement = () => {
     }
   };
 
-  return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-        <Typography variant="h4" fontWeight={700}>
-          Gestión de Usuarios
-        </Typography>
-        <Button
-          variant="contained"
-          startIcon={<PersonAdd />}
-          onClick={handleCreate}
-          sx={{ borderRadius: 2 }}
-        >
-          Nuevo usuario
-        </Button>
-      </Box>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Crea cuentas para profesores y estudiantes. El registro público está deshabilitado;
-        comparte las credenciales generadas aquí de forma segura con cada usuario.
-      </Typography>
+  const teachers = users.filter(u => u.role === 'TEACHER').length;
+  const students = users.filter(u => u.role === 'STUDENT').length;
 
-      <Paper sx={{ borderRadius: 3 }}>
-        <Tabs
-          value={tab}
-          onChange={(_, v) => setTab(v)}
-          sx={{ borderBottom: 1, borderColor: 'divider', px: 2 }}
-        >
+  return (
+    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', py: 4 }}>
+    <Container maxWidth="lg">
+      {/* Header */}
+      <Box sx={{ mb: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+          <Box>
+            <Typography variant="h4" sx={{
+              fontWeight: 800,
+              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+              backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
+            }}>
+              Gestión de Usuarios
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              Crea cuentas para profesores y estudiantes. El registro público está deshabilitado.
+            </Typography>
+          </Box>
+          <Button variant="contained" startIcon={<PersonAdd />} onClick={handleCreate}
+            sx={{
+              borderRadius: 2, textTransform: 'none', fontWeight: 600,
+              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+              boxShadow: '0 4px 12px rgba(240, 147, 251, 0.4)',
+              '&:hover': { transform: 'scale(1.02)', boxShadow: '0 6px 20px rgba(240, 147, 251, 0.5)' }
+            }}>
+            Nuevo usuario
+          </Button>
+        </Box>
+      </Box>
+
+      {/* Stats Cards */}
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid item xs={12} sm={4}>
+          <Paper sx={{
+            p: 3, borderRadius: 3, color: 'white',
+            background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            boxShadow: '0 8px 24px rgba(240, 147, 251, 0.4)',
+            transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-5px)' }
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <School sx={{ fontSize: 48, opacity: 0.9 }} />
+              <Box>
+                <Typography variant="h3" fontWeight={800}>{teachers}</Typography>
+                <Typography variant="body2" sx={{ opacity: 0.9 }}>Profesores</Typography>
+              </Box>
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Paper sx={{
+            p: 3, borderRadius: 3, color: 'white',
+            background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            boxShadow: '0 8px 24px rgba(67, 233, 123, 0.4)',
+            transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-5px)' }
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Person sx={{ fontSize: 48, opacity: 0.9 }} />
+              <Box>
+                <Typography variant="h3" fontWeight={800}>{students}</Typography>
+                <Typography variant="body2" sx={{ opacity: 0.9 }}>Estudiantes</Typography>
+              </Box>
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Paper sx={{
+            p: 3, borderRadius: 3, color: 'white',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            boxShadow: '0 8px 24px rgba(102, 126, 234, 0.4)',
+            transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-5px)' }
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <AdminPanelSettings sx={{ fontSize: 48, opacity: 0.9 }} />
+              <Box>
+                <Typography variant="h3" fontWeight={800}>{users.filter(u => u.role === 'ADMIN').length}</Typography>
+                <Typography variant="body2" sx={{ opacity: 0.9 }}>Administradores</Typography>
+              </Box>
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
+
+      <Paper sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.08)', overflow: 'hidden' }}>
+        <Tabs value={tab} onChange={(_, v) => setTab(v)}
+          sx={{ borderBottom: 1, borderColor: 'divider', px: 2 }}>
           {TABS.map(t => <Tab key={t.value} value={t.value} label={t.label} />)}
         </Tabs>
 
@@ -366,7 +430,7 @@ const UserManagement = () => {
                   users.map(u => {
                     const cfg = ROLE_CONFIG[u.role] || ROLE_CONFIG.STUDENT;
                     return (
-                      <TableRow key={u.id} sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+                      <TableRow key={u.id} sx={{ transition: 'all 0.2s', '&:hover': { bgcolor: 'rgba(240,147,251,0.05)', transform: 'translateX(3px)' } }}>
                         <TableCell>
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                             <Avatar sx={{ width: 36, height: 36, bgcolor: `${cfg.color}.main`, fontSize: 14, fontWeight: 700 }}>
@@ -453,6 +517,7 @@ const UserManagement = () => {
         </Alert>
       </Snackbar>
     </Container>
+    </Box>
   );
 };
 

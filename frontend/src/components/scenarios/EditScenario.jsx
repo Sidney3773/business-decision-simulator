@@ -128,27 +128,34 @@ const EditScenario = () => {
 
   if (!formData) {
     return (
-      <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', py: 4 }}>
+      <Container maxWidth="md">
         <Alert severity="error">{error || 'Escenario no encontrado'}</Alert>
-        <Button startIcon={<ArrowBack />} sx={{ mt: 2 }} onClick={() => navigate('/dashboard')}>
-          Volver
-        </Button>
-      </Container>
+        <Button startIcon={<ArrowBack />} sx={{ mt: 2 }} onClick={() => navigate('/dashboard')}>Volver</Button>
+      </Container></Box>
     );
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-        <IconButton onClick={() => navigate('/dashboard')}>
+    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', py: 4 }}>
+    <Container maxWidth="md">
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+        <IconButton onClick={() => navigate('/dashboard')} sx={{ bgcolor: 'white', boxShadow: 1, '&:hover': { bgcolor: 'grey.50' } }}>
           <ArrowBack />
         </IconButton>
-        <Typography variant="h5" fontWeight={700}>
-          Editar Escenario
-        </Typography>
+        <Box>
+          <Typography variant="h4" sx={{
+            fontWeight: 800,
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
+          }}>
+            Editar Escenario
+          </Typography>
+          <Typography variant="body2" color="text.secondary">Modifica los campos del escenario.</Typography>
+        </Box>
       </Box>
 
-      <Paper sx={{ p: 4, borderRadius: 3 }}>
+      <Paper sx={{ p: 4, borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
         <Box component="form" onSubmit={handleSubmit}>
@@ -312,31 +319,27 @@ const EditScenario = () => {
           <Divider sx={{ mb: 3 }} />
 
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              size="large"
-              disabled={saving}
-              startIcon={saving ? null : <CheckCircle />}
-              sx={{ borderRadius: 2, py: 1.5, fontWeight: 600 }}
-            >
+            <Button type="submit" variant="contained" fullWidth size="large"
+              disabled={saving} startIcon={saving ? null : <CheckCircle />}
+              sx={{
+                borderRadius: 2, py: 1.5, fontWeight: 700, fontSize: 16,
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+                '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 20px rgba(102, 126, 234, 0.5)' },
+                transition: 'all 0.2s'
+              }}>
               {saving ? 'Guardando...' : 'Guardar cambios'}
             </Button>
-            <Button
-              variant="outlined"
-              fullWidth
-              size="large"
-              startIcon={<ArrowBack />}
+            <Button variant="outlined" fullWidth size="large" startIcon={<ArrowBack />}
               onClick={() => navigate('/dashboard')}
-              sx={{ borderRadius: 2, py: 1.5 }}
-            >
+              sx={{ borderRadius: 2, py: 1.5, fontWeight: 600, borderWidth: 2, '&:hover': { borderWidth: 2 } }}>
               Cancelar
             </Button>
           </Box>
         </Box>
       </Paper>
     </Container>
+    </Box>
   );
 };
 

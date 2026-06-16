@@ -411,16 +411,30 @@ const CreateScenario = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', py: 4 }}>
+    <Container maxWidth="md">
+
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h4" sx={{
+          fontWeight: 800,
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
+        }}>
+          Crear Nuevo Escenario
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Completa los campos o usa el asistente IA para generar el contenido.
+        </Typography>
+      </Box>
 
       <AIScenarioAssistant formData={formData} onApply={handleApplyIA} />
 
-      <Paper sx={{ p: 4, borderRadius: 3 }}>
+      <Paper sx={{ p: 4, borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
         <Typography variant="h5" gutterBottom fontWeight={700}>
-          Crear Nuevo Escenario
+          Datos del Escenario
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          Completa los campos o usa el asistente IA de arriba para generar el contenido.
+          Completa todos los campos del formulario.
         </Typography>
 
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
@@ -523,17 +537,25 @@ const CreateScenario = () => {
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button type="submit" variant="contained" fullWidth size="large"
               disabled={loading} startIcon={loading ? null : <CheckCircle />}
-              sx={{ borderRadius: 2, py: 1.5, fontWeight: 600 }}>
+              sx={{
+                borderRadius: 2, py: 1.5, fontWeight: 700, fontSize: 16,
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+                '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 6px 20px rgba(102, 126, 234, 0.5)' },
+                transition: 'all 0.2s'
+              }}>
               {loading ? 'Creando...' : 'Crear Escenario'}
             </Button>
             <Button variant="outlined" fullWidth size="large"
-              onClick={() => navigate('/dashboard')} sx={{ borderRadius: 2, py: 1.5 }}>
+              onClick={() => navigate('/dashboard')}
+              sx={{ borderRadius: 2, py: 1.5, fontWeight: 600, borderWidth: 2, '&:hover': { borderWidth: 2 } }}>
               Cancelar
             </Button>
           </Box>
         </Box>
       </Paper>
     </Container>
+    </Box>
   );
 };
 
