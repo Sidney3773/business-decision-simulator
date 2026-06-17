@@ -164,6 +164,7 @@ const Login = () => {
                 fullWidth
                 name="email"
                 type="email"
+                label="Email"
                 placeholder="tu@email.com"
                 value={formData.email}
                 onChange={handleChange}
@@ -188,6 +189,7 @@ const Login = () => {
                 fullWidth
                 name="password"
                 type={showPassword ? 'text' : 'password'}
+                label="Contraseña"
                 placeholder="Tu contraseña"
                 value={formData.password}
                 onChange={handleChange}
