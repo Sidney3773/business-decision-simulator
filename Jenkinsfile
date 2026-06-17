@@ -22,7 +22,7 @@ pipeline {
         stage('Install Backend') {
             steps {
                 dir('backend') {
-                    sh 'npm ci'
+                    bat 'npm ci'
                 }
             }
         }
@@ -30,7 +30,7 @@ pipeline {
         stage('Install Frontend') {
             steps {
                 dir('frontend') {
-                    sh 'npm ci'
+                    bat 'npm ci'
                 }
             }
         }
@@ -38,7 +38,7 @@ pipeline {
         stage('Test Backend (Jest)') {
             steps {
                 dir('backend') {
-                    sh 'npm test -- --ci'
+                    bat 'npm test -- --ci'
                 }
             }
         }
@@ -46,7 +46,7 @@ pipeline {
         stage('Test Frontend (Vitest)') {
             steps {
                 dir('frontend') {
-                    sh 'npx vitest run'
+                    bat 'npx vitest run'
                 }
             }
         }
