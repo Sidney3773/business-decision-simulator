@@ -46,13 +46,31 @@ pipeline {
         stage('Test Frontend (Vitest)') {
             steps {
                 dir('frontend') {
-                    bat 'npx vitest run'
+                    bat 'npx vitest run --reporter=html --outputFile=test-report/index.html'
                 }
             }
         }
     }
 
     post {
+        always {
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'backend/test-report',
+                reportFiles: 'index.html',
+                reportName: 'Backend Test Report'
+            ])
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'frontend/test-report',
+                reportFiles: 'index.html',
+                reportName: 'Frontend Test Report'
+            ])
+        }
         success {
             echo 'Todos los tests pasaron correctamente.'
         }
