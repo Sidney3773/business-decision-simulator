@@ -16,6 +16,10 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/test/setup.js',
-    css: true
+    css: true,
+    reporters: ['default', 'html'],
+    outputFile: {
+      html: './test-report/index.html'
+    }
   }
 });

@@ -6,5 +6,15 @@ module.exports = {
   forceExit: true,
   clearMocks: true,
   resetMocks: true,
-  restoreMocks: true
+  restoreMocks: true,
+  reporters: [
+    'default',
+    ['jest-html-reporter', {
+      pageTitle: 'Business Decision Simulator - Test Report',
+      outputPath: './test-report/index.html',
+      includeFailureMsg: true,
+      includeSuiteFailure: true,
+      theme: 'defaultTheme'
+    }]
+  ]
 };
